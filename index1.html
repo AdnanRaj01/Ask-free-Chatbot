@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Free Chatbot</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f1f1f1; padding: 20px; }
+    .chatbox { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .message { margin: 10px 0; }
+    .user { color: blue; }
+    .bot { color: green; }
+    input[type="text"] { width: 80%; padding: 10px; }
+    button { padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <div class="chatbox">
+    <h2>Ask the Chatbot</h2>
+    <div id="chatLog"></div>
+    <input type="text" id="userInput" placeholder="Type your question...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("userInput").value;
+      if (!input) return;
+
+      const chatLog = document.getElementById("chatLog");
+      chatLog.innerHTML += `<div class="message user">You: ${input}</div>`;
+
+      const res = await fetch('http://127.0.0.1:5000/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: input })
+      });
+
+      const data = await res.json();
+      chatLog.innerHTML += `<div class="message bot">Bot: ${data.response}</div>`;
+      document.getElementById("userInput").value = "";
+    }
+  </script>
+</body>
+</html>
